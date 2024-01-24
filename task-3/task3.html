@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 70%;
+            border: none;
+            border-radius: 4px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #2ecc71;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #27ae60;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding: 15px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        .delete-btn {
+            cursor: pointer;
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            color: #c0392b;
+        }
+    </style>
+    <title>To-Do List App</title>
+</head>
+<body>
+    <div class="container">
+        <h1>To-Do List App</h1>
+        <div>
+            <input type="text" id="new-task" placeholder="Add a new task">
+            <button onclick="addTask()">Add Task</button>
+        </div>
+        <ul id="task-list"></ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if there are tasks stored in localStorage
+            const savedTasks = localStorage.getItem('tasks');
+            const taskList = document.getElementById('task-list');
+
+            if (savedTasks) {
+                taskList.innerHTML = savedTasks;
+            }
+
+            document.getElementById('new-task').addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    addTask();
+                }
+            });
+        });
+
+        function addTask() {
+            const taskInput = document.getElementById('new-task');
+            const taskText = taskInput.value.trim();
+
+            if (taskText !== '') {
+                const taskList = document.getElementById('task-list');
+
+                // Create a new list item
+                const newTask = document.createElement('li');
+                newTask.innerHTML = `
+                    <span>${taskText}</span>
+                    <span class="delete-btn" onclick="deleteTask(this)">X</span>
+                `;
+
+                // Append the new task to the task list
+                taskList.appendChild(newTask);
+
+                // Clear the input field
+                taskInput.value = '';
+
+                // Save tasks to localStorage
+                saveTasksToLocalStorage();
+            }
+        }
+
+        function deleteTask(element) {
+            const taskList = document.getElementById('task-list');
+            const taskItem = element.parentElement;
+
+            // Add fade-out animation before removing the task
+            taskItem.style.animation = 'fadeOut 0.5s ease';
+
+            // Remove the task from the list after the animation ends
+            setTimeout(() => {
+                taskList.removeChild(taskItem);
+                // Save tasks to localStorage
+                saveTasksToLocalStorage();
+            }, 500);
+        }
+
+        function saveTasksToLocalStorage() {
+            const taskList = document.getElementById('task-list');
+            localStorage.setItem('tasks', taskList.innerHTML);
+        }
+    </script>
+</body>
+</html>
